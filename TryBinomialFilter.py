@@ -28,13 +28,13 @@ for i in range(0,len(trainingSet)):
     attributes.extend([x for x in dataset[i] if not x in tv if not x in attributes])
 
 
-# TRAINING SPAM FILTER
+# TRAINING SPAM FILTER --------------------------------------------------------------
 sf = SpamFilter.BinomialSpamFilter(tv,attributes,trainingSet)
 sf.Learn()
 
 
 
-# TESTING SPAM FILTER
+# TESTING SPAM FILTER --------------------------------------------------------------
 numTries = len(testSet)
 numSuccesses = 0
 

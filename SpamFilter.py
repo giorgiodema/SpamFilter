@@ -1,8 +1,6 @@
 from functools import reduce
 
 
-        
-
 
 class BayesianClassifier:
 
@@ -37,7 +35,17 @@ class BayesianClassifier:
 
 
     def Classify(self,document):
-        raise NotImplementedError
+
+        posteriorProb = {}
+
+        for tv in self.targetValues:
+            priorElem = [x[1] for x in list(self.likelihood.items()) if x[0][0]==tv if x[0][1] in document]
+            posteriorProb[tv] = 0 if len(priorElem)==0 else reduce(lambda x,y: x*y, priorElem) * self.priorProb[tv]
+
+        inversePosteriorProb =  {v: k for k, v in posteriorProb.items()}
+        max =  reduce(lambda x,y: x if(x>y) else y, inversePosteriorProb)
+
+        return inversePosteriorProb[max]
 
 
 
@@ -55,15 +63,3 @@ class BinomialSpamFilter (BayesianClassifier):
         return len(list(filter(lambda x: x[0] == tv and a in x, self.dataset))) / len(list(filter(lambda x: x[0] == tv, self.dataset)))
 
 
-    def Classify(self,document):
-
-        posteriorProb = {}
-
-        for tv in self.targetValues:
-            priorElem = [x[1] for x in list(self.likelihood.items()) if x[0][0]==tv if x[0][1] in document]
-            posteriorProb[tv] = 0 if len(priorElem)==0 else reduce(lambda x,y: x*y, priorElem) * self.priorProb[tv]
-
-        inversePosteriorProb =  {v: k for k, v in posteriorProb.items()}
-        max =  reduce(lambda x,y: x if(x>y) else y, inversePosteriorProb)
-
-        return inversePosteriorProb[max]
