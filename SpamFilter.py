@@ -6,8 +6,6 @@ from functools import reduce
 
 class BayesianClassifier:
 
-
-
     def __init__(self,tv,a,d):
         
         self.targetValues = tv      # [spam,ham]
@@ -21,11 +19,11 @@ class BayesianClassifier:
 
 
     def estimatePriorProb(self,tv):
-        return len(list(filter(lambda x: x[0] == tv, self.dataset))) / len(self.dataset)
+        raise NotImplementedError
 
 
     def estimateLikelihood(self,tv,a):
-        return len(list(filter(lambda x: x[0] == tv and a in x, self.dataset))) / len(list(filter(lambda x: x[0] == tv, self.dataset)))
+        raise NotImplementedError
 
 
     def Learn(self):
@@ -35,12 +33,26 @@ class BayesianClassifier:
 
             for a in self.attributes:
                 self.likelihood[(tv,a)] = self.estimateLikelihood(tv,a)
-
-
         return
 
 
+    def Classify(self,document):
+        raise NotImplementedError
 
+
+
+class BinomialSpamFilter (BayesianClassifier):
+
+    def __init__(self,tv,a,d):
+        super().__init__(tv,a,d)
+
+
+    def estimatePriorProb(self,tv):
+        return len(list(filter(lambda x: x[0] == tv, self.dataset))) / len(self.dataset)
+
+
+    def estimateLikelihood(self,tv,a):
+        return len(list(filter(lambda x: x[0] == tv and a in x, self.dataset))) / len(list(filter(lambda x: x[0] == tv, self.dataset)))
 
 
     def Classify(self,document):
@@ -55,7 +67,3 @@ class BayesianClassifier:
         max =  reduce(lambda x,y: x if(x>y) else y, inversePosteriorProb)
 
         return inversePosteriorProb[max]
-
-
-
-

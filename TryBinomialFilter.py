@@ -3,7 +3,7 @@ import SpamFilter
 import functools
 import re
 
-TRAINING_SET_SIZE = 0.9
+TRAINING_SET_SIZE = 0.2
 
 # LOADING DATA FROM FILE -------------------------------------------------------------
 file = open("SMSSpamCollection","r").readlines()
@@ -29,7 +29,7 @@ for i in range(0,len(trainingSet)):
 
 
 # TRAINING SPAM FILTER
-sf = SpamFilter.BayesianClassifier(tv,attributes,trainingSet)
+sf = SpamFilter.BinomialSpamFilter(tv,attributes,trainingSet)
 sf.Learn()
 
 
