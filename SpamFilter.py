@@ -63,3 +63,36 @@ class BinomialSpamFilter (BayesianClassifier):
         return len(list(filter(lambda x: x[0] == tv and a in x, self.dataset))) / len(list(filter(lambda x: x[0] == tv, self.dataset)))
 
 
+class MultinomialSpamFilter (BayesianClassifier):
+
+    def __init__(self,tv,a,d, alpha):                           # dataset = {"CLASS":spam/ham, "word1":freq1, ..., "wordn":freqn}
+        super().__init__(tv,a,d)                                # NB: 'CLASS' must be uppercase to be dietingished from other words that are all lowercase
+        self.alpha = alpha
+
+
+
+
+
+    def estimatePriorProb(self,tv):
+        return  len(list(filter(lambda x: x["CLASS"]==tv, self.dataset)))  /  len(self.dataset)
+
+
+
+    def estimateLikelihood(self,tv,a):
+        docsClassTv = list(filter(lambda x: x["CLASS"]== tv, self.dataset))                     # documents of class tv
+        docsWordAandClassTv = list(filter(lambda x: a in x, docsClassTv))                       # documents of class 'tv' containing word 'a'
+    
+        occWordA = 0;                                                                           # occurrences of word 'a' in all documents of class 'tv' containing 'a'
+        for d in docsWordAandClassTv:
+            if a in d:
+                occWordA += d[a]
+
+        occAllWords = 0;                                                                        # all words frequencies in all documents of class 'tv'
+        for d in docsClassTv:                                                                   
+            for a in d:
+                if a!='CLASS':
+                    occAllWords += d[a]
+
+                    
+
+        return (occWordA + self.alpha) / (occAllWords + self.alpha*len(self.dataset))
