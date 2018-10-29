@@ -79,20 +79,20 @@ class MultinomialSpamFilter (BayesianClassifier):
 
 
     def estimateLikelihood(self,tv,a):
-        docsClassTv = list(filter(lambda x: x["CLASS"]== tv, self.dataset))                     # documents of class tv
-        docsWordAandClassTv = list(filter(lambda x: a in x, docsClassTv))                       # documents of class 'tv' containing word 'a'
+        instancesClassTv = list(filter(lambda x: x["CLASS"]== tv, self.dataset))                     # documents of class tv
+        instancesWithAttrAandClassTv = list(filter(lambda x: a in x, instancesClassTv))              # documents of class 'tv' containing word 'a'
     
-        occWordA = 0;                                                                           # occurrences of word 'a' in all documents of class 'tv' containing 'a'
-        for d in docsWordAandClassTv:
+        occAttrA = 0;                                                                                # occurrences of word 'a' in all documents of class 'tv' containing 'a'
+        for d in instancesWithAttrAandClassTv:
             if a in d:
-                occWordA += d[a]
+                occAttrA += d[a]
 
-        occAllWords = 0;                                                                        # all words frequencies in all documents of class 'tv'
-        for d in docsClassTv:                                                                   
+        occAllAttr = 0;                                                                              # all words frequencies in all documents of class 'tv'
+        for d in instancesClassTv:                                                                   
             for a in d:
                 if a!='CLASS':
-                    occAllWords += d[a]
+                    occAllAttr += d[a]
 
                     
 
-        return (occWordA + self.alpha) / (occAllWords + self.alpha*len(self.dataset))
+        return (occAttrA + self.alpha) / (occAllAttr + self.alpha*len(self.dataset))
